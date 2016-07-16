@@ -33,6 +33,8 @@ static int l_open(lua_State* L)
 	    lua_pushstring(L, NFD_GetError());
 	    lua_error(L); // always returns here
 	    return -1;
+	default:
+		return 0;
     }
 }
 
@@ -75,6 +77,8 @@ static int l_openMany(lua_State* L)
 	    lua_pushstring(L, NFD_GetError());
 	    lua_error(L); // always returns here
 	    return -1;
+	default:
+		return 0;
     }
 }
 
@@ -104,6 +108,8 @@ static int l_save(lua_State* L)
 	    lua_pushstring(L, NFD_GetError());
 	    lua_error(L); // always returns here
 	    return -1;
+	default:
+		return 0;
     }
 }
 
