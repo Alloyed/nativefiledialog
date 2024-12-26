@@ -38,6 +38,34 @@ static int l_open(lua_State* L)
     }
 }
 
+/***
+ * Prompt the user to open a file, and return their selection.
+ * @function openFolder
+ * @param initial
+ * @return path
+ */
+static int l_openFolder(lua_State* L)
+{
+    nfdchar_t* out;
+    const nfdchar_t* initial = luaL_optstring(L, 1, NULL);
+    nfdresult_t status = NFD_PickFolder(initial, &out);
+
+    switch (status) {
+    case NFD_OKAY:
+        lua_pushstring(L, out);
+        return 1;
+    case NFD_CANCEL:
+        lua_pushboolean(L, false);
+        return 1;
+    case NFD_ERROR:
+        lua_pushstring(L, NFD_GetError());
+        lua_error(L); // always returns here
+        return -1;
+    default:
+        return 0;
+    }
+}
+
 static void push_pathset(lua_State* L, nfdpathset_t* set)
 {
     size_t count = NFD_PathSet_GetCount(set);
@@ -129,9 +157,10 @@ static void luax_setfuncs(lua_State *L, const luaL_Reg *l, int nup)
 }
 
 static const struct luaL_Reg mod [] = {
-	{"open",     l_open},
-	{"openMany", l_openMany},
-	{"save",     l_save},
+	{"open",       l_open},
+    {"openFolder", l_openFolder},
+	{"openMany",   l_openMany},
+	{"save",       l_save},
 	{NULL, NULL}
 };
 
